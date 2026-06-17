@@ -1,10 +1,10 @@
-# **************************************************************************** # Nom ......... : mon_app.py  
+# **************************************************************************** 
+# # Nom ......... : mon_app.py  
 # Rôle ........ : "" Interface collaborative permettant l'insertion d'une image,  
 #                 l'extraction exhaustive de métadonnées EXIF, l'édition de tags  
 #                 (Artiste, GPS) via un formulaire dynamique et la visualisation  
 #                 cartographique interactive (Localisation & POI)."" 
 # 
-# Auteur ...... : Tchenkaeva Iman 
 # Version ..... : V3.0  Version finale optimisée pour le rendu  
 # Environnement : Windows - VS Code - Python 3.12+  
 # Librairies .. : Streamlit, Pillow (PIL), Piexif, Folium, Streamlit-Folium, base64 
