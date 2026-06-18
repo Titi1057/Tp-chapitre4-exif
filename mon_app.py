@@ -3,7 +3,7 @@
 #                 l'extraction exhaustive de métadonnées EXIF, l'édition de tags  
 #                 (Artiste, GPS) via un formulaire dynamique et la visualisation  
 #                 cartographique interactive (Localisation & POI)."" 
-# Nom prénom : Tchenkaeva Iman
+
 # Version ..... : V3.0  Version finale optimisée pour le rendu  
 # Environnement : Windows - VS Code - Python 3.12+  
 # Librairies .. : Streamlit, Pillow (PIL), Piexif, Folium, Streamlit-Folium, base64 
@@ -133,7 +133,7 @@ if uploaded_file:
         folium.Marker([lat, lon], popup="Photo ici", icon=folium.Icon(color='red')).add_to(m1) 
         # Affichage via le pont st_folium 
         st_folium(m1, width=350, height=300, key="map1") 
-        
+
     # Permet à l'utilisateur de télécharger le fichier généré sur le cloud
         with open("updated_image.jpg", "rb") as file:
             st.download_button(
