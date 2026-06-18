@@ -1,10 +1,9 @@
-# **************************************************************************** 
-# # Nom ......... : mon_app.py  
+# **************************************************************************** # # Nom ......... : mon_app.py  
 # Rôle ........ : "" Interface collaborative permettant l'insertion d'une image,  
 #                 l'extraction exhaustive de métadonnées EXIF, l'édition de tags  
 #                 (Artiste, GPS) via un formulaire dynamique et la visualisation  
 #                 cartographique interactive (Localisation & POI)."" 
-# 
+# Nom prénom : Tchenkaeva Iman
 # Version ..... : V3.0  Version finale optimisée pour le rendu  
 # Environnement : Windows - VS Code - Python 3.12+  
 # Librairies .. : Streamlit, Pillow (PIL), Piexif, Folium, Streamlit-Folium, base64 
@@ -97,6 +96,25 @@ if uploaded_file:
         # Encodage en UTF-8 pour injecter les nouvelles chaînes de caractères 
         exif_dict["0th"][piexif.ImageIFD.Artist] = artist.encode("utf-8") 
         exif_dict["0th"][piexif.ImageIFD.ImageDescription] = description.encode("utf-8") 
+          
+        # --- ENCODAGE ET INTEGRATION TECHNIQUE DU GPS ---
+        lat_ref = "N" if lat >= 0 else "S"
+        lon_ref = "E" if lon >= 0 else "W"
+        abs_lat, abs_lon = abs(lat), abs(lon)
+        
+        lat_deg, lat_min = int(abs_lat), int((abs_lat - int(abs_lat)) * 60)
+        lat_sec = int(((abs_lat - lat_deg) * 60 - lat_min) * 60 * 100)
+        
+        lon_deg, lon_min = int(abs_lon), int((abs_lon - int(abs_lon)) * 60)
+        lon_sec = int(((abs_lon - lon_deg) * 60 - lon_min) * 60 * 100)
+        
+        exif_dict["GPS"] = {
+            piexif.GPSIFD.GPSLatitudeRef: lat_ref.encode('utf-8'),
+            piexif.GPSIFD.GPSLatitude: ((lat_deg, 1), (lat_min, 1), (lat_sec, 100)),
+            piexif.GPSIFD.GPSLongitudeRef: lon_ref.encode('utf-8'),
+            piexif.GPSIFD.GPSLongitude: ((lon_deg, 1), (lon_min, 1), (lon_sec, 100))
+        }
+        # -----------------------------------------------
           
         # Conversion du dictionnaire en binaire (Dump) et sauvegarde physique 
         exif_bytes = piexif.dump(exif_dict) 
