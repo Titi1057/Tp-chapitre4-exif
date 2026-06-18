@@ -37,13 +37,13 @@ if uploaded_file:
     # Affichage de l'image (responsive avec use_container_width) 
     st.image(image, caption="Photographie chargée", use_container_width=True) 
 
-    # --- ÉTAPE 1 : EXTRACTION MAXIMALE DES DONNÉES (VERSION SÉCURISÉE) ---  
+    # --- ÉTAPE 1 : EXTRACTION MAXIMALE DES DONNÉES (VERSION S SÉCURISÉE) ---  
     metadata_tree = {}          # Initialisation d'un dictionnaire "propre" vide 
       
     try: 
         exif_data = image._getexif() # Tentative d'extraction du dictionnaire brut 
           
-        # LE FILET DE SÉCURITÉ : On vérifie si exif_data contient des données (n'est pas None) 
+        # LE FILET DE S SÉCURITÉ : On vérifie si exif_data contient des données (n'est pas None) 
         if exif_data is not None and len(exif_data) > 0: 
             st.subheader("📊 Métadonnées réelles détectées (Exif-Org)") 
             # La boucle s'exécute uniquement si l'objet possède la méthode .items() 
@@ -85,6 +85,11 @@ if uploaded_file:
         # Bouton d'envoi du formulaire 
         submit = st.form_submit_button("Mettre à jour l'image") 
 
+    # --- INITIALISATION DE LA MÉMOIRE DE L'APPLICATION ---
+    # Évite que le bouton de téléchargement ne disparaisse après le clic
+    if "image_generee" not in st.session_state:
+        st.session_state.image_generee = False
+
     # Action déclenchée après clic sur le bouton 
     if submit: 
         # Initialisation d'une structure EXIF standard (0th, Exif, GPS, 1st) 
@@ -119,12 +124,16 @@ if uploaded_file:
         # Conversion du dictionnaire en binaire (Dump) et sauvegarde physique 
         exif_bytes = piexif.dump(exif_dict) 
         image.save("updated_image.jpg", exif=exif_bytes) 
-        st.success("✅ Fichier 'updated_image.jpg' généré avec succès !") 
+        
+        # Mémorisation du succès de l'opération
+        st.session_state.image_generee = True
 
-        # --- AJOUT DU BOUTON DE TÉLÉCHARGEMENT POUR LE CLOUD ---
+    # --- AFFICHAGE FIGÉ DU BOUTON ET DU SUCCÈS (HORS DU BLOC IF SUBMIT) ---
+    if st.session_state.image_generee:
+        st.success("✅ Fichier 'updated_image.jpg' généré avec succès !") 
         with open("updated_image.jpg", "rb") as file:
             st.download_button(
-                label="📥 Télécharger l'image modifiée",
+                label="📥 Télécharger l'image modifiée (updated_image.jpg)",
                 data=file,
                 file_name="updated_image.jpg",
                 mime="image/jpeg"
